@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-3">Перечень контрактов :</h2><hr>
+    {% for contract in contracts_list %}
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-6" >
+                    {% if contract.type_doc.id == 1 %}
+                        <h5> № {{ contract.num_contract }}  ,  Цена: {{ contract.c_contract}}</h5><br>
+                        <h5> {{ contract.name_object }} </h5>
+                    {% else %}
+                        <h7> № {{ contract.num_contract }}  ,  Цена: {{ contract.c_contract}}</h7><br>
+                        <h7> {{ contract.name_object }} </h7>
+                    {% endif %}
+                </div>
+                {% if user.is_authenticated %}
+                    <div class="col-md-2"><a href="{% url 'contract-detail' contract.id %}" class="btn btn-sm btn-outline-info my-2 my-sm-0" role="group" aria-disabled="true">Просмотр</a></div>
+                    <div class="col-md-2"><a href="{% url 'con-pdf-view' contract.id %}" class="btn btn-sm btn-outline-info my-2 my-sm-0" role="group" aria-disabled="true">ПДФ</a></div>
+                    <div class="col-md-2"><a href="{% url 'contract-update' contract.id %}" class="btn btn-sm btn-outline-danger my-2 my-sm-0" role="group" aria-disabled="true">Изменить</a></div>
+                {% else %}
+                    <div class="col-md-2"><a href="{% url 'contract-detail' contract.id %}" class="btn btn-sm btn-outline-info my-2 my-sm-0" role="group" aria-disabled="true">Просмотр</a></div>
+                    <div class="col-md-2"></div>
+                {% endif %}
+
+            </div>
+        </div>
+
+    {% empty %}
+        <h1>Список пуст!</h1>
+    {% endfor %}
+
+        {% if user.is_authenticated %}
+            <br>
+                <div class="row">
+                    <div class="col"><a href="{% url 'contract-create' %}" class="btn btn-outline-danger my-1 my-sm-0" aria-disabled="true">Создать</a></div>
+                </div><br>
+        {% endif %}
+
+    {% block pagination %}
+        {% if is_paginated %}
+
+            {% load bootstrap4 %}
+            {% bootstrap_pagination page_obj %}
+
+        {% endif %}
+    {% endblock pagination%}
+
+{% endblock content %}
